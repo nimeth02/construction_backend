@@ -1,0 +1,6 @@
+@LevoHubBackend.API_HostAddress = http://localhost:5049
+
+GET {{LevoHubBackend.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

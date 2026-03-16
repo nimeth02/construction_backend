@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/LevoHubBackend.API/LevoHubBackend.API.csproj" />
+    <Project Path="src/LevoHubBackend.Application/LevoHubBackend.Application.csproj" />
+    <Project Path="src/LevoHubBackend.Domain/LevoHubBackend.Domain.csproj" />
+    <Project Path="src/LevoHubBackend.Infrastructure/LevoHubBackend.Infrastructure.csproj" />
+  </Folder>
+</Solution>
