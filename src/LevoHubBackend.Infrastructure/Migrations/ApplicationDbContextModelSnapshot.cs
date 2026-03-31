@@ -195,6 +195,86 @@ namespace LevoHubBackend.Infrastructure.Migrations
                     b.ToTable("RolePermissions");
                 });
 
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.Stage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("Stages");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.Template", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Templates");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.TemplateDepartment", b =>
+                {
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("TemplateId", "DepartmentId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("TemplateDepartments");
+                });
+
             modelBuilder.Entity("LevoHubBackend.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -306,6 +386,34 @@ namespace LevoHubBackend.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.Stage", b =>
+                {
+                    b.HasOne("LevoHubBackend.Domain.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId");
+
+                    b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.TemplateDepartment", b =>
+                {
+                    b.HasOne("LevoHubBackend.Domain.Entities.Department", "Department")
+                        .WithMany("TemplateDepartments")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LevoHubBackend.Domain.Entities.Template", "Template")
+                        .WithMany("TemplateDepartments")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Template");
+                });
+
             modelBuilder.Entity("LevoHubBackend.Domain.Entities.User", b =>
                 {
                     b.HasOne("LevoHubBackend.Domain.Entities.Department", "Department")
@@ -348,6 +456,8 @@ namespace LevoHubBackend.Infrastructure.Migrations
 
             modelBuilder.Entity("LevoHubBackend.Domain.Entities.Department", b =>
                 {
+                    b.Navigation("TemplateDepartments");
+
                     b.Navigation("Users");
                 });
 
@@ -366,6 +476,11 @@ namespace LevoHubBackend.Infrastructure.Migrations
                     b.Navigation("RolePermissions");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.Template", b =>
+                {
+                    b.Navigation("TemplateDepartments");
                 });
 
             modelBuilder.Entity("LevoHubBackend.Domain.Entities.User", b =>

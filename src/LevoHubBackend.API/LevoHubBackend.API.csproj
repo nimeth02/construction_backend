@@ -20,4 +20,8 @@
     <ProjectReference Include="..\LevoHubBackend.Infrastructure\LevoHubBackend.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logging\" />
+  </ItemGroup>
+
 </Project>

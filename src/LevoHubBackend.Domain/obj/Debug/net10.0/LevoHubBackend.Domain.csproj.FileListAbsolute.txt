@@ -9,3 +9,15 @@ C:\Users\MSI\Desktop\levo hub backend\src\LevoHubBackend.Domain\obj\Debug\net10.
 C:\Users\MSI\Desktop\levo hub backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\refint\LevoHubBackend.Domain.dll
 C:\Users\MSI\Desktop\levo hub backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\LevoHubBackend.Domain.pdb
 C:\Users\MSI\Desktop\levo hub backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\ref\LevoHubBackend.Domain.dll
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\bin\Debug\net10.0\LevoHubBackend.Domain.deps.json
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\bin\Debug\net10.0\LevoHubBackend.Domain.dll
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\bin\Debug\net10.0\LevoHubBackend.Domain.pdb
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\LevoHubBackend.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\LevoHubBackend.Domain.AssemblyInfoInputs.cache
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\LevoHubBackend.Domain.AssemblyInfo.cs
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\LevoHubBackend.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\LevoHubBackend.Domain.sourcelink.json
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\LevoHubBackend.Domain.dll
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\refint\LevoHubBackend.Domain.dll
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\LevoHubBackend.Domain.pdb
+C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.Domain\obj\Debug\net10.0\ref\LevoHubBackend.Domain.dll

@@ -20,10 +20,34 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<JobTitle> JobTitles => Set<JobTitle>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<Stage> Stages => Set<Stage>();
+    public DbSet<Template> Templates => Set<Template>();
+    public DbSet<TemplateDepartment> TemplateDepartments => Set<TemplateDepartment>();
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken)
+    {
+        await base.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task CommitTransactionAsync(CancellationToken cancellationToken)
+    {
+        if (base.Database.CurrentTransaction != null)
+        {
+            await base.Database.CurrentTransaction.CommitAsync(cancellationToken);
+        }
+    }
+
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
+    {
+        if (base.Database.CurrentTransaction != null)
+        {
+            await base.Database.CurrentTransaction.RollbackAsync(cancellationToken);
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -58,6 +82,20 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             .HasOne(rp => rp.Permission)
             .WithMany(p => p.RolePermissions)
             .HasForeignKey(rp => rp.PermissionId);
+        
+        // Configure Many-to-Many for TemplateDepartment
+        builder.Entity<TemplateDepartment>()
+            .HasKey(td => new { td.TemplateId, td.DepartmentId });
+
+        builder.Entity<TemplateDepartment>()
+            .HasOne(td => td.Template)
+            .WithMany(t => t.TemplateDepartments)
+            .HasForeignKey(td => td.TemplateId);
+
+        builder.Entity<TemplateDepartment>()
+            .HasOne(td => td.Department)
+            .WithMany(d => d.TemplateDepartments)
+            .HasForeignKey(td => td.DepartmentId);
         
         // Removed UserProfile One-to-One as it was deleted
     }
