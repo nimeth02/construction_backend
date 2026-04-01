@@ -32,7 +32,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         {
             Status = statusCode,
             Title = title,
-            // Type = $"https://httpstatuses.com/{statusCode}"
+            Detail = exception.Message
         };
 
         // Attach validation errors if present

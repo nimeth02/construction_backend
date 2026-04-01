@@ -11,6 +11,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        // The connection string is retrieved from appsettings.json
+        // Use "DefaultConnection" for local development or "RemoteConnection" for Supabase
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<ApplicationDbContext>((sp, options) =>

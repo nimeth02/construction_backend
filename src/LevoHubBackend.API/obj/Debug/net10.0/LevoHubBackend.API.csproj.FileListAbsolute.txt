@@ -289,4 +289,3 @@ C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.AP
 C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.API\obj\Debug\net10.0\LevoHubBackend.API.pdb
 C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.API\obj\Debug\net10.0\LevoHubBackend.API.genruntimeconfig.cache
 C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.API\obj\Debug\net10.0\ref\LevoHubBackend.API.dll
-C:\Users\Yasith\Desktop\levo frontend\construction_backend\src\LevoHubBackend.API\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
