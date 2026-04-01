@@ -108,3 +108,5 @@ using (var scope = app.Services.CreateScope())
 
 app.Run();
 
+
+//  "DefaultConnection": "Host=db.lwqkellwjmvixkyjmtix.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=levohub2026",
