@@ -148,6 +148,200 @@ namespace LevoHubBackend.Infrastructure.Migrations
                     b.ToTable("Permissions");
                 });
 
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClientContactNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.ProjectStage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeadlineDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StageId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("StageId");
+
+                    b.ToTable("ProjectStages");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.ProjectStageEdge", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Condition")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EdgeType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FromProjectStageId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("LagDays")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrderIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ToProjectStageId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FromProjectStageId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ToProjectStageId");
+
+                    b.ToTable("ProjectStageEdges");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.ProjectStageTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeadlineDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectStageId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TaskDescription")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TaskName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectStageId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectStageTasks");
+                });
+
             modelBuilder.Entity("LevoHubBackend.Domain.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -367,6 +561,69 @@ namespace LevoHubBackend.Infrastructure.Migrations
                     b.Navigation("Department");
                 });
 
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.ProjectStage", b =>
+                {
+                    b.HasOne("LevoHubBackend.Domain.Entities.Project", "Project")
+                        .WithMany("ProjectStages")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LevoHubBackend.Domain.Entities.Stage", "Stage")
+                        .WithMany("ProjectStages")
+                        .HasForeignKey("StageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Stage");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.ProjectStageEdge", b =>
+                {
+                    b.HasOne("LevoHubBackend.Domain.Entities.ProjectStage", "FromProjectStage")
+                        .WithMany("FromEdges")
+                        .HasForeignKey("FromProjectStageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LevoHubBackend.Domain.Entities.Project", "Project")
+                        .WithMany("ProjectStageEdges")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LevoHubBackend.Domain.Entities.ProjectStage", "ToProjectStage")
+                        .WithMany("ToEdges")
+                        .HasForeignKey("ToProjectStageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("FromProjectStage");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("ToProjectStage");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.ProjectStageTask", b =>
+                {
+                    b.HasOne("LevoHubBackend.Domain.Entities.ProjectStage", "ProjectStage")
+                        .WithMany("ProjectStageTasks")
+                        .HasForeignKey("ProjectStageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LevoHubBackend.Domain.Entities.User", "AssignedUser")
+                        .WithMany("AssignedTasks")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("AssignedUser");
+
+                    b.Navigation("ProjectStage");
+                });
+
             modelBuilder.Entity("LevoHubBackend.Domain.Entities.RolePermission", b =>
                 {
                     b.HasOne("LevoHubBackend.Domain.Entities.Permission", "Permission")
@@ -471,11 +728,32 @@ namespace LevoHubBackend.Infrastructure.Migrations
                     b.Navigation("RolePermissions");
                 });
 
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.Project", b =>
+                {
+                    b.Navigation("ProjectStageEdges");
+
+                    b.Navigation("ProjectStages");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.ProjectStage", b =>
+                {
+                    b.Navigation("FromEdges");
+
+                    b.Navigation("ProjectStageTasks");
+
+                    b.Navigation("ToEdges");
+                });
+
             modelBuilder.Entity("LevoHubBackend.Domain.Entities.Role", b =>
                 {
                     b.Navigation("RolePermissions");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("LevoHubBackend.Domain.Entities.Stage", b =>
+                {
+                    b.Navigation("ProjectStages");
                 });
 
             modelBuilder.Entity("LevoHubBackend.Domain.Entities.Template", b =>
@@ -485,6 +763,8 @@ namespace LevoHubBackend.Infrastructure.Migrations
 
             modelBuilder.Entity("LevoHubBackend.Domain.Entities.User", b =>
                 {
+                    b.Navigation("AssignedTasks");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

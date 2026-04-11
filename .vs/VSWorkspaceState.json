@@ -3,16 +3,14 @@
     "",
     "\\src",
     "\\src\\LevoHubBackend.API",
-    "\\src\\LevoHubBackend.API\\Controllers",
     "\\src\\LevoHubBackend.Application",
     "\\src\\LevoHubBackend.Application\\Features",
-    "\\src\\LevoHubBackend.Application\\Features\\Roles",
-    "\\src\\LevoHubBackend.Application\\Features\\Roles\\Queries",
-    "\\src\\LevoHubBackend.Application\\Features\\Roles\\Queries\\GetRoles",
     "\\src\\LevoHubBackend.Application\\Features\\Users",
     "\\src\\LevoHubBackend.Application\\Features\\Users\\Commands",
-    "\\src\\LevoHubBackend.Application\\Features\\Users\\Commands\\CreateUser"
+    "\\src\\LevoHubBackend.Application\\Features\\Users\\Commands\\CreateUser",
+    "\\src\\LevoHubBackend.Domain",
+    "\\src\\LevoHubBackend.Infrastructure"
   ],
-  "SelectedNode": "\\LevoHubBackend.slnx",
+  "SelectedNode": "\\src\\LevoHubBackend.API\\appsettings.json",
   "PreviewInSolutionExplorer": false
 }

@@ -13,5 +13,7 @@ public class Stage : AuditableEntity<int>
 
     public int? DepartmentId { get; set; }
     public Department? Department { get; set; }
+
+    public ICollection<ProjectStage> ProjectStages { get; set; } = new List<ProjectStage>();
 }
 

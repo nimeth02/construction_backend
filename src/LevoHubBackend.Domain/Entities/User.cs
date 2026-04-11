@@ -24,4 +24,5 @@ public class User : AuditableEntity<Guid>
     public string? ProfilePictureUrl { get; set; }
 
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<ProjectStageTask> AssignedTasks { get; set; } = new List<ProjectStageTask>();
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LevoHubBackend.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fb5e1c72834563161cb70c8a4c1d94664256a1fa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e16f8cc289abac7faca0d405fad85ea96857abc6")]
 [assembly: System.Reflection.AssemblyProductAttribute("LevoHubBackend.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LevoHubBackend.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
