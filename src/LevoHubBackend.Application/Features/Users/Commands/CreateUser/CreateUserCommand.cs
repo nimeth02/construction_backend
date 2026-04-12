@@ -15,5 +15,5 @@ public class CreateUserCommand : IRequest<Guid>
     public int? DepartmentId { get; set; }
     public int? JobTitleId { get; set; }
     
-    public List<int> RoleIds { get; set; } = new List<int>();
+    public List<Guid> RoleIds { get; set; } = new List<Guid>();
 }

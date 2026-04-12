@@ -1,61 +1,80 @@
 using LevoHubBackend.Application.DTOs.Auth;
 using LevoHubBackend.Application.Interfaces;
+using LevoHubBackend.Domain.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LevoHubBackend.Application.Features.Auth.Commands.Login;
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
+public class LoginCommand : IRequest<AuthResultDto>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly ITokenService _tokenService;
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+}
 
-    public LoginCommandHandler(IApplicationDbContext context, IPasswordHasher passwordHasher, ITokenService tokenService)
+public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResultDto>
+{
+    private readonly UserManager<User> _userManager;
+    private readonly ITokenService _tokenService;
+    private readonly RoleManager<Role> _roleManager;
+    private readonly IConfiguration _configuration;
+
+    public LoginCommandHandler(UserManager<User> userManager, ITokenService tokenService, RoleManager<Role> roleManager, IConfiguration configuration)
     {
-        _context = context;
-        _passwordHasher = passwordHasher;
+        _userManager = userManager;
         _tokenService = tokenService;
+        _roleManager = roleManager;
+        _configuration = configuration;
     }
 
-    public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<AuthResultDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-                    .ThenInclude(r => r.RolePermissions)
-                        .ThenInclude(rp => rp.Permission)
-            .FirstOrDefaultAsync(u => u.Email == request.LoginRequest.Email, cancellationToken);
+        var user = await _userManager.FindByEmailAsync(request.Email)
+            ?? throw new UnauthorizedAccessException("Invalid email or password.");
 
-        if (user == null || !_passwordHasher.VerifyPassword(request.LoginRequest.Password, user.PasswordHash))
-        {
-            throw new System.Exception("Invalid credentials"); // In real app, use custom exception class
-        }
+        var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+        if (!passwordValid)
+            throw new UnauthorizedAccessException("Invalid email or password.");
 
         if (!user.IsActive)
+            throw new UnauthorizedAccessException("Your account is disabled. Please contact an administrator.");
+
+        // Get roles the user belongs to
+        var roles = await _userManager.GetRolesAsync(user);
+
+        // Get all permission claims directly assigned to the user
+        var userClaims = await _userManager.GetClaimsAsync(user);
+        var permissionClaims = userClaims.ToList();
+
+        // Also gather claims from the roles (this is where permission claims live)
+        foreach (var roleName in roles)
         {
-             throw new System.Exception("User is not active.");
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role != null)
+            {
+                var roleClaims = await _roleManager.GetClaimsAsync(role);
+                permissionClaims.AddRange(roleClaims);
+            }
         }
+        var expiryMinutes = int.Parse(_configuration["JwtSettings:ExpiryMinutes"] ?? "60");
 
-        var roles = user.UserRoles.Select(ur => ur.Role.Name).Distinct();
-        
-        var permissions = user.UserRoles
-            .SelectMany(ur => ur.Role.RolePermissions)
-            .Select(rp => rp.Permission.Key)
-            .Distinct();
-
-        var token = _tokenService.GenerateToken(user, roles, permissions);
-
-        return new LoginResponse
+        return new AuthResultDto
         {
-            Token = token,
-            Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName
+            AccessToken = _tokenService.GenerateToken(user, roles, permissionClaims),
+            ExpiresIn = expiryMinutes * 60,
+            User = new AuthUserDto
+            {
+                Id = user.Id.ToString(),
+                Email = user.Email!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Roles = roles
+            }
         };
     }
 }

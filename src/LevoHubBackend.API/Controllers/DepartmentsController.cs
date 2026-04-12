@@ -1,3 +1,4 @@
+using LevoHubBackend.Application.Common.Authorization;
 using LevoHubBackend.Application.DTOs.Department;
 using LevoHubBackend.Application.Features.Departments.Commands.CreateDepartment;
 using LevoHubBackend.Application.Features.Departments.Commands.DeleteDepartment;
@@ -5,6 +6,7 @@ using LevoHubBackend.Application.Features.Departments.Commands.UpdateDepartment;
 using LevoHubBackend.Application.Features.Departments.Queries.GetDepartmentById;
 using LevoHubBackend.Application.Features.Departments.Queries.GetDepartments;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -23,12 +25,14 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Policy = Permissions.Departments.View)]
     public async Task<ActionResult<List<DepartmentDto>>> GetDepartments()
     {
         return await _mediator.Send(new GetDepartmentsQuery());
     }
 
     [HttpGet("{id}")]
+    [Authorize(Policy = Permissions.Departments.View)]
     public async Task<ActionResult<DepartmentDto>> GetDepartmentById(int id)
     {
         var department = await _mediator.Send(new GetDepartmentByIdQuery { Id = id });
@@ -40,6 +44,7 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = Permissions.Departments.Create)]
     public async Task<ActionResult<int>> CreateDepartment(CreateDepartmentCommand command)
     {
         var id = await _mediator.Send(command);
@@ -47,20 +52,20 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Policy = Permissions.Departments.Edit)]
     public async Task<IActionResult> UpdateDepartment(int id, UpdateDepartmentCommand command)
     {
         command.Id = id;
-
         var result = await _mediator.Send(command);
         if (!result)
         {
             return NotFound();
         }
-
         return NoContent();
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Policy = Permissions.Departments.Delete)]
     public async Task<IActionResult> DeleteDepartment(int id)
     {
         var result = await _mediator.Send(new DeleteDepartmentCommand { Id = id });
@@ -68,7 +73,6 @@ public class DepartmentsController : ControllerBase
         {
             return NotFound();
         }
-
         return NoContent();
     }
 }
