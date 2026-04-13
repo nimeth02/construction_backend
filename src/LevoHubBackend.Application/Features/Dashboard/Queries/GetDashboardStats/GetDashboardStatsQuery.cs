@@ -26,11 +26,12 @@ public class GetDashboardStatsQueryHandler : IRequestHandler<GetDashboardStatsQu
     public async Task<DashboardStatsDto> Handle(GetDashboardStatsQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+        var firstDayOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         
         // Use a simple week calculation (last 7 days for simplicity, or actually this week's start)
         int diff = (7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7;
         var firstDayOfWeek = now.AddDays(-1 * diff).Date;
+        firstDayOfWeek = DateTime.SpecifyKind(firstDayOfWeek, DateTimeKind.Utc);
 
         var totalProjects = await _context.Projects.CountAsync(p => p.IsActive, cancellationToken);
         var totalProjectsThisMonth = await _context.Projects
