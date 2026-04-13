@@ -20,6 +20,10 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid, Identity
     public DbSet<Stage> Stages => Set<Stage>();
     public DbSet<Template> Templates => Set<Template>();
     public DbSet<TemplateDepartment> TemplateDepartments => Set<TemplateDepartment>();
+    public DbSet<Project> Projects => Set<Project>();
+    public DbSet<ProjectStage> ProjectStages => Set<ProjectStage>();
+    public DbSet<ProjectStageTask> ProjectStageTasks => Set<ProjectStageTask>();
+    public DbSet<ProjectStageEdge> ProjectStageEdges => Set<ProjectStageEdge>();
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -79,5 +83,47 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid, Identity
             .HasOne(td => td.Department)
             .WithMany(d => d.TemplateDepartments)
             .HasForeignKey(td => td.DepartmentId);
+        
+        // Configure ProjectStage (Many-to-Many with Payload)
+        builder.Entity<ProjectStage>()
+            .HasOne(ps => ps.Project)
+            .WithMany(p => p.ProjectStages)
+            .HasForeignKey(ps => ps.ProjectId);
+
+        builder.Entity<ProjectStage>()
+            .HasOne(ps => ps.Stage)
+            .WithMany(s => s.ProjectStages)
+            .HasForeignKey(ps => ps.StageId);
+
+        // Configure ProjectStageTask
+        builder.Entity<ProjectStageTask>()
+            .HasOne(pst => pst.ProjectStage)
+            .WithMany(ps => ps.ProjectStageTasks)
+            .HasForeignKey(pst => pst.ProjectStageId);
+
+        builder.Entity<ProjectStageTask>()
+            .HasOne(pst => pst.AssignedUser)
+            .WithMany(u => u.AssignedTasks)
+            .HasForeignKey(pst => pst.UserId);
+
+        // Configure ProjectStageEdge
+        builder.Entity<ProjectStageEdge>()
+            .HasOne(pse => pse.Project)
+            .WithMany(p => p.ProjectStageEdges)
+            .HasForeignKey(pse => pse.ProjectId);
+
+        builder.Entity<ProjectStageEdge>()
+            .HasOne(pse => pse.FromProjectStage)
+            .WithMany(ps => ps.FromEdges)
+            .HasForeignKey(pse => pse.FromProjectStageId)
+            .OnDelete(DeleteBehavior.Restrict); // Avoid multiple cascade paths
+
+        builder.Entity<ProjectStageEdge>()
+            .HasOne(pse => pse.ToProjectStage)
+            .WithMany(ps => ps.ToEdges)
+            .HasForeignKey(pse => pse.ToProjectStageId)
+            .OnDelete(DeleteBehavior.Restrict); // Avoid multiple cascade paths
+        
+        // Removed UserProfile One-to-One as it was deleted
     }
 }

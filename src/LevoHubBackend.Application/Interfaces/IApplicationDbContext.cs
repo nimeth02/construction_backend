@@ -16,6 +16,10 @@ public interface IApplicationDbContext
     DbSet<Stage> Stages { get; }
     DbSet<Template> Templates { get; }
     DbSet<TemplateDepartment> TemplateDepartments { get; }
+    DbSet<Project> Projects { get; }
+    DbSet<ProjectStage> ProjectStages { get; }
+    DbSet<ProjectStageTask> ProjectStageTasks { get; }
+    DbSet<ProjectStageEdge> ProjectStageEdges { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     Task BeginTransactionAsync(CancellationToken cancellationToken);
