@@ -1,7 +1,9 @@
 using LevoHubBackend.Application.Interfaces;
 using LevoHubBackend.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,19 +11,19 @@ namespace LevoHubBackend.Application.Features.Users.Commands.CreateUser;
 
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Guid>
 {
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
     private readonly IApplicationDbContext _context;
-    private readonly IPasswordHasher _passwordHasher;
 
-    public CreateUserCommandHandler(IApplicationDbContext context, IPasswordHasher passwordHasher)
+    public CreateUserCommandHandler(UserManager<User> userManager, RoleManager<Role> roleManager, IApplicationDbContext context)
     {
+        _userManager = userManager;
+        _roleManager = roleManager;
         _context = context;
-        _passwordHasher = passwordHasher;
     }
 
     public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        var passwordHash = _passwordHasher.HashPassword(request.Password);
-
         // Derive DepartmentId from JobTitle if provided
         if (request.JobTitleId.HasValue)
         {
@@ -34,34 +36,40 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Guid>
 
         var user = new User
         {
+            Id = Guid.NewGuid(),
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
-            PasswordHash = passwordHash,
+            UserName = request.Email, // Identity uses UserName, often set to Email
             EmployeeCode = request.EmployeeCode,
             PhoneNumber = request.PhoneNumber,
             DepartmentId = request.DepartmentId,
             JobTitleId = request.JobTitleId,
-            DateOfJoining = DateTime.UtcNow // Defaulting to now for creation
+            DateOfJoining = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
         };
 
-        _context.Users.Add(user);
+        var result = await _userManager.CreateAsync(user, request.Password);
+
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new Exception($"User creation failed: {errors}");
+        }
 
         // Assign Roles
-        if (request.RoleIds != null)
+        if (request.RoleIds != null && request.RoleIds.Any())
         {
             foreach (var roleId in request.RoleIds)
             {
-                var userRole = new UserRole
+                var role = await _roleManager.FindByIdAsync(roleId.ToString());
+                if (role != null)
                 {
-                    User = user,
-                    RoleId = roleId
-                };
-                _context.UserRoles.Add(userRole);
+                    await _userManager.AddToRoleAsync(user, role.Name!);
+                }
             }
         }
-
-        await _context.SaveChangesAsync(cancellationToken);
 
         return user.Id;
     }
